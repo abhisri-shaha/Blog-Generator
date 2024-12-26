@@ -1,14 +1,15 @@
 import streamlit as st
 from langchain.prompts import PromptTemplate
-from transformers import AutoModel
+from langchain.llms import CTransformers  # Use CTransformers for GGML model support
 
-## Function to get response from LLaMA 2 model using Hugging Face
+## Function to get response from LLaMA 2 model using GGML
 
 def getLLamaresponse(input_text, no_words, blog_style):
 
-    # Load model directly
-
-    llm = AutoModel.from_pretrained("TheBloke/Llama-2-7B-Chat-GGML")
+    # Load the LLaMA model using CTransformers (supports GGML models)
+    llm = CTransformers(model="models/llama-2-7b-chat.ggmlv3.q8_0.bin",  # Update path as needed
+                        model_type="llama",
+                        config={"max_new_tokens": 256, "temperature": 0.01})
     
     ## Prompt Template
     template = """
@@ -19,10 +20,9 @@ def getLLamaresponse(input_text, no_words, blog_style):
     prompt = PromptTemplate(input_variables=["blog_style", "input_text", "no_words"], template=template)
     
     ## Generate the response from the LLaMA 2 model
-    response = llm(prompt.format(blog_style=blog_style, input_text=input_text, no_words=no_words), max_length=256, temperature=0.01)
+    response = llm(prompt.format(blog_style=blog_style, input_text=input_text, no_words=no_words))
     
-    return response[0]['generated_text']
-
+    return response
 
 st.set_page_config(page_title="Generate Blogs",
                    page_icon='👾',
@@ -33,8 +33,7 @@ st.header("Blog Generator")
 
 input_text = st.text_input("Enter the Blog Topic")
 
-## creating two more columns for additional 2 fields
-
+# creating two more columns for additional 2 fields
 col1, col2 = st.columns([5, 5])
 
 with col1:
@@ -45,7 +44,7 @@ with col2:
     
 submit = st.button("Generate")
 
-## Final response
+# Final response
 if submit:
     response = getLLamaresponse(input_text, no_words, blog_style)
     st.write(response)
