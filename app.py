@@ -1,14 +1,14 @@
 import streamlit as st
 from langchain.prompts import PromptTemplate
-from transformers import pipeline
+from transformers import AutoModel
 
 ## Function to get response from LLaMA 2 model using Hugging Face
 
 def getLLamaresponse(input_text, no_words, blog_style):
 
-    ## Load the Llama-2 model via Hugging Face
-    model_name = "TheBloke/Llama-2-7B-Chat-GGML"  # Make sure the model is available on Hugging Face
-    generator = pipeline("text-generation", model=model_name, tokenizer=model_name, device=0)  # device=0 for GPU, -1 for CPU
+    # Load model directly
+
+    llm = AutoModel.from_pretrained("TheBloke/Llama-2-7B-Chat-GGML")
     
     ## Prompt Template
     template = """
@@ -19,7 +19,7 @@ def getLLamaresponse(input_text, no_words, blog_style):
     prompt = PromptTemplate(input_variables=["blog_style", "input_text", "no_words"], template=template)
     
     ## Generate the response from the LLaMA 2 model
-    response = generator(prompt.format(blog_style=blog_style, input_text=input_text, no_words=no_words), max_length=256, temperature=0.01)
+    response = llm(prompt.format(blog_style=blog_style, input_text=input_text, no_words=no_words), max_length=256, temperature=0.01)
     
     return response[0]['generated_text']
 
