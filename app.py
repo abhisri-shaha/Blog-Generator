@@ -7,7 +7,7 @@ from langchain.llms import CTransformers
 def getLLamaresponse(input_text, no_words, blog_style):
 
     ### LLama2 model
-    llm = CTransformers(model='llama-2-7b-chat.ggmlv3.q2_K.bin',
+    llm = CTransformers(model='https://drive.google.com/file/d/1W-25SJzmXHAWfQJ1kH6dFDs8TwZN2AnP/view?usp=sharing',
                       model_type='llama',
                       config={'max_new_tokens':256,
                               'temperature':0.6})
