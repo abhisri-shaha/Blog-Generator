@@ -2,6 +2,5 @@ sentence-transformers
 uvicorn
 ctransformers
 langchain
-langchain_community
 python-box
 streamlit
